@@ -1,0 +1,8 @@
+name: SharedAdvancement
+version: 0.0.1
+main: com.baehyeonwoo.shareadvancement.plugin.ShareAdvancementPluginMain
+api-version: 1.19
+libraries: 
+ - io.github.monun:tap-core:4.7.2
+ - io.github.monun:kommand-core:2.14.0
+ - io.github.monun:heartbeat-coroutines:0.0.4
