@@ -39,12 +39,6 @@ class ShareAdvancementPluginMain : JavaPlugin() {
             }
         }
 
-        val data = corpses.toList()
-        corpses.clear()
-        data.forEach {
-            ShareAdvancementObject.createCorpseNpcAsData(it) // it makes a corpses
-        }
-
         server.onlinePlayers.forEach {
             fakeServer.addPlayer(it)
         }

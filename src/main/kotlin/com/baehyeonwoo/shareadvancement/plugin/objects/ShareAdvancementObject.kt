@@ -28,6 +28,7 @@ import org.bukkit.event.HandlerList
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import kotlin.random.Random.Default.nextInt
 
 /**
  * @author Komworld Dev Team
@@ -50,6 +51,7 @@ object ShareAdvancementObject {
             it.setGameRule(GameRule.REDUCED_DEBUG_INFO, true)
 
             it.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false)
+            it.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true)
         }
         server.onlinePlayers.forEach {
             fakeServer.addPlayer(it)
@@ -60,8 +62,9 @@ object ShareAdvancementObject {
             fakeServer.update()
         }, 0, 1)
 
+        println(corpses.size)
         corpses.forEach {
-            createCorpseNpcAsData(it)
+            createCorpseNpcAsData(it, true)
         }
     }
 
@@ -77,36 +80,39 @@ object ShareAdvancementObject {
         createCorpseNpcAsData(data)
     }
 
-    fun createCorpseNpcAsData(corpseData: CorpseData, skinProfile: MojangAPI.SkinProfile? = null) {
+    fun createCorpseNpcAsData(corpseData: CorpseData, isLoaded: Boolean = false, skinProfile: MojangAPI.SkinProfile? = null) {
         server.scheduler.runTaskAsynchronously(plugin, Runnable {
-            val profile = skinProfile ?: corpseData.uniqueId?.let { MojangAPI.fetchSkinProfile(it) }
-            HeartbeatScope().launch {
+            val profile = skinProfile ?: corpseData.uniqueId?.let { MojangAPI.fetchSkinProfile(it) }!!
+            server.scheduler.runTask(plugin, Runnable {
                 val npc = fakeServer.spawnPlayer(
                     corpseData.location,
-                    "${corpseData.name}의 시체",
-                    profile?.profileProperties()?.toSet() ?: emptySet()
+                    "${profile.name}의 시체",
+                    profile.profileProperties().toSet()
                 )
+
                 npc.updateMetadata {
                     (this as CraftPlayer).handle.apply {
                         pose = Pose.SLEEPING
                     }
                     linkedInventory[uniqueId] = corpseData.inventory
                 }
-                corpses += CorpseData.from(npc)
-                println(corpses)
+                if (!isLoaded) corpses += CorpseData.from(npc, corpseData.uniqueId)
+
                 HeartbeatScope().launch {
-                    delay(500L)
+                    delay(150L)
                     server.onlinePlayers.forEach {
-                        (it as CraftPlayer).handle.connection.send(ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, (npc.bukkitEntity as CraftPlayer).handle))
+                        fakePlayers.forEach { selected ->
+                            (it as CraftPlayer).handle.connection.send(ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, (selected.bukkitEntity as CraftPlayer).handle))
+                        }
                     }
                 }
-            }
+            })
         })
     }
 
 
     private fun createCorpseInventory(player: Player) = server.createInventory(null, 45, text(player.name, NamedTextColor.DARK_GRAY)).apply {
-        contents = Array(45) { if (it < 41) player.inventory.contents[it] else ItemStack(Material.AIR) }
+        contents = Array(45) { if (it < 41) player.inventory.contents!![it] else ItemStack(Material.AIR) }
     }
 
     fun openInventory(player: Player, body: FakeEntity<Player>) {

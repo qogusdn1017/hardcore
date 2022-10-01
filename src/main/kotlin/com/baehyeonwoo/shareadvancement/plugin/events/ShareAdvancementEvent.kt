@@ -10,12 +10,19 @@ import com.baehyeonwoo.shareadvancement.plugin.objects.ShareAdvancementObject.cr
 import com.baehyeonwoo.shareadvancement.plugin.objects.ShareAdvancementObject.fakePlayers
 import com.baehyeonwoo.shareadvancement.plugin.objects.ShareAdvancementObject.fakeServer
 import com.baehyeonwoo.shareadvancement.plugin.objects.ShareAdvancementObject.openInventory
+import com.baehyeonwoo.shareadvancement.plugin.objects.ShareAdvancementObject.plugin
 import com.baehyeonwoo.shareadvancement.plugin.objects.ShareAdvancementObject.server
+import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
+import io.github.monun.heartbeat.coroutines.HeartbeatScope
 import io.github.monun.tap.fake.FakeEntity
 import io.github.monun.tap.fake.PlayerInfoAction
 import io.github.monun.tap.protocol.PacketSupport
 import io.github.monun.tap.protocol.sendPacket
 import io.papermc.paper.event.player.AsyncChatEvent
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -34,6 +41,13 @@ object ShareAdvancementEvent : Listener {
             player.sendPacket(it)
         }
         joinMessage(null)
+
+        HeartbeatScope().launch {
+            delay(100L)
+            fakePlayers.forEach {
+                (player as CraftPlayer).handle.connection.send(ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, (it.bukkitEntity as CraftPlayer).handle))
+            }
+        }
     }
 
 
@@ -58,6 +72,13 @@ object ShareAdvancementEvent : Listener {
     }
 
     @EventHandler
+    fun PlayerAdvancementCriterionGrantEvent.onCriterionGrant() {
+        server.onlinePlayers.forEach {
+            it.getAdvancementProgress(advancement).awardCriteria(criterion)
+        }
+    }
+
+    @EventHandler
     fun AsyncChatEvent.onChat() {
         if (!player.isOp) isCancelled = true
     }
@@ -69,7 +90,7 @@ object ShareAdvancementEvent : Listener {
             yaw = 0f
 
             while (block.type.isAir) {
-                y -= 0.05
+                y -= 0.025
             }
         })
         player.inventory.clear()

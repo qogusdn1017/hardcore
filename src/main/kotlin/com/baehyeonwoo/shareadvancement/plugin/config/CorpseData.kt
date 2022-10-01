@@ -16,14 +16,13 @@ data class CorpseData(
     val location: Location,
     val uniqueId: UUID?,
     val inventory: Inventory,
-    val name: String
+    val name: String,
 ): ConfigurationSerializable {
     companion object {
 
-        fun from(fakeEntity: FakeEntity<Player>): CorpseData {
+        fun from(fakeEntity: FakeEntity<Player>, uuid: UUID? = null): CorpseData {
             val location = fakeEntity.location
-            val uniqueId = fakeEntity.bukkitEntity.playerProfile.id
-            return CorpseData(location, uniqueId, ShareAdvancementObject.linkedInventory[fakeEntity.bukkitEntity.uniqueId]!!, fakeEntity.bukkitEntity.name)
+            return CorpseData(location, uuid, ShareAdvancementObject.linkedInventory[fakeEntity.bukkitEntity.uniqueId]!!, fakeEntity.bukkitEntity.name)
         }
 
         @Suppress("UNUSED", "UNCHECKED_CAST")
@@ -31,13 +30,10 @@ data class CorpseData(
         fun deserialize(args: Map<String, Any>): CorpseData {
             val location = args["location"] as Location
             val uuid = UUID.fromString(args["uniqueId"] as String)
-            val inventory = (args["inventory"] as List<String>).map {
-                if (it.isEmpty()) ItemStack(Material.AIR) else ItemStack.deserializeBytes(it.toByteArray())
-            }
             val name = args["name"] as String
 
-            val inventoryContents =  ShareAdvancementObject.server.createInventory(null, 45, Component.text(name, NamedTextColor.DARK_GRAY)).apply {
-                contents = inventory.toTypedArray()
+            val inventoryContents = ShareAdvancementObject.server.createInventory(null, 45, Component.text("")).apply {
+                contents = (args["inventory"] as List<ItemStack>).toTypedArray()
             }
 
             return CorpseData(location, uuid, inventoryContents, name)
@@ -48,7 +44,7 @@ data class CorpseData(
         val out = mutableMapOf<String, Any>()
         out["location"] = location
         uniqueId?.let { out["uniqueId"] = it.toString() }
-        out["inventory"] = inventory.contents.map { it?.serializeAsBytes()?.decodeToString() ?: "" }
+        out["inventory"] = inventory.contents?.toList()!!
         out["name"] = name
         return out
     }
