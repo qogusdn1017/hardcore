@@ -1,23 +1,35 @@
-# Hyeon Samples - Paper
+# 하드코어 (Hardcore)
 
-## Environment
+눈을 감지 못한 채 죽은 이들을 위하여.
 
-- [Paper 1.19.2](https://papermc.io/downloads) dependencies
-- [Tap](https://github.com/monun/tap) dependencies
-- [Kommand](https://github.com/monun/kommand/) dependencies
-- [InvFX](https://github.com/monun/invfx/) depenedencies (OPTIONAL)
-- [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines/) dependencies
-- [Heartbeat Coroutines](https://github.com/monun/heartbeat-coroutines/) dependencies
-- [Server Script](https://github.com/aroxu/server-script/)
+모든 멤버 시점:
 
-### This Project Requires:
+[![하드코어 모든 멤버 시점](https://i.ytimg.com/vi/t3K3iXz-NYY/maxresdefault.jpg)](https://www.youtube.com/playlist?list=PLSPcsedfnZmRGABA7lLcYa7gUmx-zKbk-)
 
-- JDK 17
-- unzip package (for [./server-script.sh](./server-script.sh))
+---
 
-### Special Thanks:
+[플러그인 다운로드](https://github.com/qogusdn1017/hardcore/releases/latest/download/hardcore.jar)
 
-- [monun](https://github.com/monun)
-- [aroxu](https://github.com/aroxu)
+- Paper 1.19.2
+  - 게임 내 음성 채팅은 [Simple Voice Chat](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat) 모드를 사용하였습니다.
+
+---
+
+## Credits
+
+Hardcore by [Komworld Dev Team](https://github.com/komworld)
+
+- [BaeHyeonWoo](https://github.com/qogusdn1017)
+- [HighRight](https://github.com/highright1234)
 - [dytroc](https://github.com/dytroc)
-- [JetBrains](https://jetbrains.com/)
+- [aroxu](https://github.com/aroxu)
+- [PyBsh](https://github.com/PyBsh)
+
+Special Thanks
+- [monun](https://github.com/monun)
+
+---
+
+## License
+
+[GPL v3.0](./LICENSE.md)

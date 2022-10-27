@@ -29,6 +29,9 @@ tasks {
         }
         filteringCharset = "UTF-8"
     }
+    reobfJar {
+        outputJar.set(File("out/${rootProject.name}.jar"))
+    }
     register<Task>("generatePluginYml") {
         var newlyCretaed: Boolean
         val resourcesDir = rootProject.file("src/main/resources").also { if (!it.exists()) it.mkdirs(); newlyCretaed = true }
@@ -36,9 +39,9 @@ tasks {
         if (!newlyCretaed) pluginYml.deleteRecursivelyOrThrow(); pluginYml.createNewFile()
 
         pluginYml.writeText("""
-            |name: SharedAdvancement
+            |name: Hardcore
             |version: ${rootProject.properties["version"]}
-            |main: ${rootProject.properties["group"]}.shareadvancement.plugin.ShareAdvancementPluginMain
+            |main: ${rootProject.properties["group"]}.hardcore.plugin.HardcorePluginMain
             |api-version: ${Dependency.Paper.API}
             |libraries: 
             ${Dependency.Libraries.LibCore.joinToString("\n") { "| - $it" }}
@@ -61,7 +64,6 @@ tasks {
             into(if (plugins.listFiles { _, it -> it.matches(regex) }?.isNotEmpty() == true) update else plugins)
 
             doLast {
-
                 update.mkdirs()
                 File(update, "RELOAD").delete()
             }

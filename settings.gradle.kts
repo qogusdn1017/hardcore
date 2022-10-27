@@ -1,4 +1,4 @@
-rootProject.name = "share-advancement"
+rootProject.name = "hardcore"
 
 pluginManagement {
     repositories {
