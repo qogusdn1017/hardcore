@@ -14,6 +14,7 @@ import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.corpses
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.fakeServer
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.isRunning
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.start
+import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.usableUnbans
 import io.github.monun.kommand.kommand
 import org.bukkit.configuration.serialization.ConfigurationSerialization.registerClass
 import org.bukkit.plugin.java.JavaPlugin
@@ -43,9 +44,11 @@ class HardcorePluginMain : JavaPlugin() {
 
         kommand {
             register("hardcore") {
+                requires { isConsole }
                 gameKommand(this)
             }
             register("unban") {
+                requires { isPlayer }
                 unbanKommand(this)
             }
         }
@@ -56,6 +59,7 @@ class HardcorePluginMain : JavaPlugin() {
         server.onlinePlayers.forEach { fakeServer.removePlayer(it) }
 
         if (isRunning) config.set("isRunning", true) else config.set("isRunning", false)
+        config.set("usableUnbans", usableUnbans)
         config.set("corpses", corpses.toList())
         saveConfig()
     }

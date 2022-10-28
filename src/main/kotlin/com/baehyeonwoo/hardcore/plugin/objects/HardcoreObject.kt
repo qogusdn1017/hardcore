@@ -46,6 +46,7 @@ object HardcoreObject {
     val corpses = arrayListOf<HardcoreCorpseData>()
     val coroutines = arrayListOf<Job>()
     var unbanable = false
+    var usableUnbans = 0
 
     fun start() {
         isRunning = true
@@ -79,6 +80,8 @@ object HardcoreObject {
             }
         }.also { coroutines.add(it) }
 
+        usableUnbans = plugin.config.getInt("usableUnbans")
+
         corpses.forEach { createCorpseNpcFromData(it, true) }
     }
 
@@ -90,6 +93,7 @@ object HardcoreObject {
         coroutines.forEach { it.cancel() }
         corpses.clear()
         plugin.config.set("corpses", null)
+        plugin.config.set("usableUnbans", 0)
         plugin.saveConfig()
     }
 

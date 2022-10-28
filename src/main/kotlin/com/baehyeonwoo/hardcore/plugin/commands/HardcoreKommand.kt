@@ -12,9 +12,11 @@ import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.server
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.start
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.stop
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.unbanable
+import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.usableUnbans
 import io.github.monun.kommand.getValue
 import io.github.monun.kommand.node.LiteralNode
 import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.BanList
 import org.bukkit.OfflinePlayer
 
@@ -25,7 +27,6 @@ import org.bukkit.OfflinePlayer
 object HardcoreKommand {
     fun gameKommand(builder: LiteralNode) {
         builder.apply {
-            requires { isOp }
             executes {
                 if (!isRunning) {
                     plugin.logger.info("게임 시작")
@@ -58,8 +59,12 @@ object HardcoreKommand {
                         val target: OfflinePlayer by it
 
                         target.name?.let { name -> server.getBanList(BanList.Type.NAME).pardon(name) }
-                        sender.sendMessage(text("완료"))
-                        unbanable = false
+                        player.sendMessage(text("완료"))
+                        --usableUnbans
+                        if (usableUnbans == 0) unbanable = false
+                    }
+                    else {
+                        player.sendMessage(text("조건을 만족하지 못하여 명령어를 사용할 수 없습니다.", NamedTextColor.RED))
                     }
                 }
             }

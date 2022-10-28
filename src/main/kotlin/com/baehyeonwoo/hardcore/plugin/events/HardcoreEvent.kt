@@ -11,7 +11,6 @@ import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.fakePlayers
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.fakeServer
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.openInventory
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.server
-import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.unbanable
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent
 import io.github.monun.heartbeat.coroutines.HeartbeatScope
@@ -44,8 +43,10 @@ object HardcoreEvent : Listener {
 
         server.onlinePlayers.filter { player.uniqueId != it.uniqueId }.forEach { otherP ->
             server.advancementIterator().forEach { advancement ->
-                otherP.getAdvancementProgress(advancement).awardedCriteria.forEach { criterion ->
-                    player.getAdvancementProgress(advancement).awardCriteria(criterion)
+                if (!advancement.key().value().contains("recipes")) {
+                    otherP.getAdvancementProgress(advancement).awardedCriteria.forEach { criterion ->
+                        player.getAdvancementProgress(advancement).awardCriteria(criterion)
+                    }
                 }
             }
         }
@@ -60,10 +61,21 @@ object HardcoreEvent : Listener {
     @EventHandler
     fun PlayerAdvancementCriterionGrantEvent.onCriterionGrant() {
         server.onlinePlayers.forEach {
-            it.getAdvancementProgress(advancement).awardCriteria(criterion)
+            if (!advancement.key().value().contains("recipes")) {
+                it.getAdvancementProgress(advancement).awardCriteria(criterion)
 
-            if (it.getAdvancementProgress(advancement).isDone) {
-                if (!unbanable) unbanable = true
+                if (server.advancementIterator().asSequence().filter { advc -> !advc.key.value().contains("recipes") && !advc.key.value().endsWith("root") }.all { advc -> advc.root == advancement.root && it.getAdvancementProgress(advc).isDone }) {
+                    // TODO FIX THIS
+                }
+
+
+//                if (it.getAdvancementProgress(advancement).advancement.parent?.children?.all { child -> it.getAdvancementProgress(child).isDone } == true) {
+//                    if (!unbanable) {
+//                        unbanable = true
+//                        ++usableUnbans
+//                        println(usableUnbans)
+//                    }
+//                }
             }
         }
     }
@@ -79,7 +91,9 @@ object HardcoreEvent : Listener {
             pitch = 0f
             yaw = 0f
 
-            while (block.type.isAir) { y -= 0.025 }
+            while (block.type.isAir) {
+                y -= 0.025
+            }
         })
         player.inventory.clear()
         player.banPlayer(" ")
@@ -92,8 +106,8 @@ object HardcoreEvent : Listener {
         if (isSneaking) {
             fakePlayers.find {
                 it.bukkitEntity.location.distance(player.location) <= 1.5 ||
-                it.bukkitEntity.location.clone().subtract(1.0, 0.0, 0.0).distance(player.location) <= 1.5 ||
-                it.bukkitEntity.location.clone().subtract(2.0, 0.0, 0.0).distance(player.location) <= 1.5
+                        it.bukkitEntity.location.clone().subtract(1.0, 0.0, 0.0).distance(player.location) <= 1.5 ||
+                        it.bukkitEntity.location.clone().subtract(2.0, 0.0, 0.0).distance(player.location) <= 1.5
             }?.let {
                 openInventory(player, it)
             }
