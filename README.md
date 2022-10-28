@@ -26,10 +26,10 @@ Hardcore by [Komworld Dev Team](https://github.com/komworld)
 - [PyBsh](https://github.com/PyBsh)
 
 Special Thanks
-- [monun](https://github.com/monun)
+- [monun](https://github.com/monun) (Tap - FakePlayer 기능)
 
 ---
 
 ## License
 
-[GPL v3.0](./LICENSE.md)
+- [GPL v3.0](./LICENSE.md)
