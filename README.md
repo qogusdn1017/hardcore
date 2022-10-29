@@ -2,15 +2,18 @@
 
 눈을 감지 못한 채 죽은 이들을 위하여.
 
-모든 멤버 시점:
+![Hardcore](https://user-images.githubusercontent.com/36562850/198818849-2dd36205-84ba-4df5-afb1-9ee57be8f072.png)
+
+---
+
+- 모든 멤버 시점:
 
 [![하드코어 모든 멤버 시점](https://i.ytimg.com/vi/t3K3iXz-NYY/maxresdefault.jpg)](https://www.youtube.com/playlist?list=PLSPcsedfnZmRGABA7lLcYa7gUmx-zKbk-)
 
 ---
 
-[플러그인 다운로드](https://github.com/qogusdn1017/hardcore/releases/latest/download/hardcore.jar)
+- [플러그인 다운로드](https://github.com/qogusdn1017/hardcore/releases/latest/download/hardcore.jar) / Paper 1.19.2
 
-- Paper 1.19.2
   - 게임 내 음성 채팅은 [Simple Voice Chat](https://www.curseforge.com/minecraft/mc-mods/simple-voice-chat) 모드를 사용하였습니다.
 
 ---
@@ -28,8 +31,6 @@ Hardcore by [Komworld Dev Team](https://github.com/komworld)
 Special Thanks
 - [monun](https://github.com/monun) (Tap - FakePlayer 기능)
 
----
-
 ## License
 
 - [GPL v3.0](./LICENSE.md)
@@ -38,9 +39,7 @@ Special Thanks
 
 자신의 유튜브 컨텐츠로 제작하는 것에 대해서는 아무런 문제가 없으나, 출처를 밝혀주시고 가급적이면 본 컨텐츠 참여인원 분들께 검토를 요청해보시길 바랍니다.
 
----
-
-### 후일담?
+## 후일담?
 
 사실, 제 시험기간에 긴급 요청으로 개발진들이 곧장 뛰어들어 만든지라 제작과정에서 풀 이야기가 없습니다.
 
