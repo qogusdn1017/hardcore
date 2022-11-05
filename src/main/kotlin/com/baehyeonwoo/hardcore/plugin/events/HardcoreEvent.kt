@@ -11,6 +11,8 @@ import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.fakePlayers
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.fakeServer
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.openInventory
 import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.server
+import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.unbanable
+import com.baehyeonwoo.hardcore.plugin.objects.HardcoreObject.usableUnbans
 import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent
 import io.github.monun.heartbeat.coroutines.HeartbeatScope
@@ -60,23 +62,22 @@ object HardcoreEvent : Listener {
 
     @EventHandler
     fun PlayerAdvancementCriterionGrantEvent.onCriterionGrant() {
+        var f = false
         server.onlinePlayers.forEach {
             if (!advancement.key().value().contains("recipes")) {
                 it.getAdvancementProgress(advancement).awardCriteria(criterion)
 
-                if (server.advancementIterator().asSequence().filter { advc -> !advc.key.value().contains("recipes") && !advc.key.value().endsWith("root") }.all { advc -> advc.root == advancement.root && it.getAdvancementProgress(advc).isDone }) {
-                    // TODO FIX THIS
+                if (server.advancementIterator().asSequence()
+                        .filter { advc -> !advc.key.value().contains("recipes") && !advc.key.value().endsWith("root") && advc.root == advancement.root }
+                        .all {  advc -> it.getAdvancementProgress(advc).isDone }) {
+
+                    f = true
                 }
-
-
-//                if (it.getAdvancementProgress(advancement).advancement.parent?.children?.all { child -> it.getAdvancementProgress(child).isDone } == true) {
-//                    if (!unbanable) {
-//                        unbanable = true
-//                        ++usableUnbans
-//                        println(usableUnbans)
-//                    }
-//                }
             }
+        }
+        if(f){
+            unbanable = true
+            ++usableUnbans
         }
     }
 
